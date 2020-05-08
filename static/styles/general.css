@@ -245,12 +245,15 @@ a{
     display: none;
     position: absolute;
     padding: 1em;
+    padding-top: 0.5rem;
     border-radius: 0 0 0.2em 0.2em;
+    padding-left: 1rem;
+    padding-right: 1rem;
     /*background-color: var(--deep-blue);*/
 }
 
 .popup-parent .popup:before{
-        animation-duration: 5s;
+    animation-duration: 5s;
     animation-name: opacity-out;
 }
 

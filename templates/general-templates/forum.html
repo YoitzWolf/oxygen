@@ -1,0 +1,40 @@
+{% extends "general-templates/basic.html" %}
+
+{% block content %}
+<div class="w-40 mrg-auto card" style="margin-top: 7%;">
+    <div class="content">
+        <div style="display: flex; flex-wrap: wrap;">
+            <a class="brand brand-extra svg-light" href="/">
+                {% if headers %}
+                    {{headers['brand'] | safe}}
+                {% else %}
+                    oxygen login
+                {% endif %}
+            </a>
+            <nav class="head-text mrg-vertical-auto">login</nav>
+        </div>
+    </div>
+    <div class="content" style="padding: 2rem; padding-top: 0rem;">
+        <form name="login" method="post" enctype="multipart/form-data">
+            
+            <input type="text" name="login" class="linear-input w-90 mrg-auto" placeholder="login or e-mail">
+            
+            <input type="password" name="password" class="linear-input w-90 mrg-auto" placeholder="pasword">
+            <br>
+            <div class="w-90 mrg-auto" style="display: block;">
+                <div class="wrap">
+                    <button type="commit" class="linear-btn w-45 mrg-auto">
+                        Commit
+                    </button>
+                    
+                    <a class="linear-btn mrg-auto" href="/register">
+                        Registration
+                    </a>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -44,7 +44,9 @@ class JsonMaster():
         for item in activated:
             if item in data["activable"]:
                 for block in data[item]["activated"]:
+                    print(block, "is activated")
                     data[item][block] = data[item]["activated"][block]
+        print(data)
         
         
         if data["method"] == "R": # recursive
@@ -64,7 +66,7 @@ class JsonMaster():
     def htmlifyFile(filename, attr={}) -> dict:
         return JsonMaster.htmlify(
             JsonMaster.getJson(filename),
-            (attr["activated"] if "acticated" in attr else []),
+            (attr["activated"] if "activated" in attr else []),
             (attr["attr"] if "attr" in attr else {})
         )
 

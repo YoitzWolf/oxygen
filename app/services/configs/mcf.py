@@ -22,8 +22,8 @@ class Database_Config():
     
     
 # custom
-ADDRES            =   None#'::' #"192.168.1.105"
-PORT              =   None#8080
+ADDRES            =   '::' #"192.168.1.105"
+PORT              =   8080
 
 def getAddres():  return ADDRES  
 def getPort():    return PORT

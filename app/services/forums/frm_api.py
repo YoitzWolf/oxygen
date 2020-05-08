@@ -21,7 +21,7 @@ from app.alchemy                                    import session as Session
 
 folder = "templates"
 
-blueprint: flask.Blueprint = flask.Blueprint('user_api', __name__, template_folder=folder)    
+blueprint: flask.Blueprint = flask.Blueprint('forum_api', __name__, template_folder=folder)    
 # courier: Courier = Courier()
 # Session.global_init(Database_Config.FORUM)
 # session = Session.create_session()
@@ -41,12 +41,12 @@ def getBlueprint() -> flask.Blueprint:
 @blueprint.route("/forum")
 def main():
     headers = {
-            "main": "Test Page",
+            "main": "Forum",
             "brand": SvgMaster.getFullLogo(),
             "menu": JsonMaster.htmlifyFile(
                 "./templates/json-templates/menu.json",
                 {
-                    "activated": []
+                    "activated": ["forum"]
                 } 
             ),
             "user": UserMaster.get_userBar()

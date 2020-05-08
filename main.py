@@ -16,7 +16,7 @@ from app.services.courier.svg                       import SvgMaster
 from app.services.courier.jsr                       import JsonMaster
 
 import app.services.users.usr_api                   as UserMaster
-import app.services.forums.frm_api                   as ForumMaster
+import app.services.forums.frm_api                  as ForumMaster
 
 # App Init
 app = flask.Flask(__name__)
@@ -25,7 +25,7 @@ app.config.from_object(Config)
 @app.route("/")
 def main():
     headers = {
-            "main": "Test Page",
+            "main": "Main Page",
             "brand": SvgMaster.getFullLogo(),
             "menu": JsonMaster.htmlifyFile(
                 "./templates/json-templates/menu.json",
@@ -36,7 +36,7 @@ def main():
             "user": UserMaster.get_userBar()
     }
     return flask.render_template(
-        "general-templates/basic.html",
+        "general-templates/forum.html",
         title="oxygen",
         headers=headers
     )
@@ -44,4 +44,7 @@ def main():
 if __name__ == "__main__":
     UserMaster.init_login(app=app)
     app.register_blueprint(UserMaster.blueprint)
+    
+    app.register_blueprint(ForumMaster.blueprint)
+    
     app.run(host=getAddres(), port=getPort())
