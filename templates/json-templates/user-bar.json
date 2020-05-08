@@ -1,0 +1,9 @@
+{
+    "signature": "user-bar menu linear json file",
+    "method": "T",
+    "queue": ["unautorised", "autorised"],
+    "activable": [],
+    
+    "unautorised":"./block-templates/unautorised.html",
+    "autorised":"./block-templates/autorised.html"
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+{% block head%}
+<head>
+	
+		<title>{{title}}</title>
+		<meta name="viewport\" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <link href="https://fonts.googleapis.com/css?family=Jost:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap&subset=cyrillic,latin-ext" rel="stylesheet"> 
+		<link rel="stylesheet" href="/static/styles/general.css">
+		<link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+</head>
+{% endblock %}
+
+<body>
+    {% block bar %}
+		<nav class="fixed-top bg-dark header" id="topBar">
+            <div class="container w-70 mrg-auto">
+                <a class="brand svg-light" href="/">
+                    {% if headers %}
+                    {{headers['brand'] | safe}}
+                    {% else %}
+                    oxygen
+                    {% endif %}
+                </a>
+                <ul class="linear-menu">
+                    {% if headers %}
+                        {% for i in headers['menu']['queue'] %}
+                            {{headers['menu'][i] | safe}}
+                        {% endfor %}
+                    {% else %}
+                        <a href="/"><li class="btn item">News</li></a>
+                        <a href="/"><li class="btn item">Forum</li></a>
+                    {% endif %}
+                </ul>
+                <ul class="linear-menu" style="margin-left: 0">
+                    {% if headers %}
+                        
+                        {{headers['user'] | safe}}
+                        
+                    {% else %}
+                        user system is broken!
+                    {% endif %}
+                </ul>
+            </div>
+		</nav>
+    {% endblock bar %}
+
+	{% block header %}
+    {% endblock header %}
+	   
+
+	{% block main %}
+        <main class="container main" id="content" role="main">
+            {{error|safe}}
+            <br>
+            {% block content %}
+
+            {% endblock content %}
+
+        </main>
+	{% endblock main %}
+
+	<footer class="pressed-bottom bg-dark footer">
+		<div class="container w-70 mrg-auto" id="footer">
+			<span class='copyright'>
+				{% block footer_content %}
+		        &copy; Copyright 2020 by <a href="/">Yoitz</a>
+		        {% endblock footer_content %}
+			</span>
+		</div>
+	</footer> 
+
+
+  </body>
+</html>

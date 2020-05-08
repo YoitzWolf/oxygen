@@ -1,0 +1,76 @@
+{
+    "signature": "top-bar menu recursive json file",
+    "method": "R",
+    "queue": ["news", "forum"],
+    "activable": ["news", "forum"],
+    "news": {
+        
+        "activated":{
+            "li":{
+                "next": "text",
+                "tag": "li",
+                "attr": ["class"],
+                "class": "btn item active"
+            }  
+        },
+        
+        "first": "link",
+        "end": "",
+        "link": {
+            "next": "li",
+            "tag": "a",
+            "attr": ["href"],
+            "href": "/news"
+        },
+        "li": {
+            "next": "text",
+            "tag": "li",
+            "attr": ["class"],
+            "class": "btn item"
+        },
+        "text": {
+            "next": "end",
+            "tag": null,
+            "attr": ["text"],
+            "text": "News"
+
+        }
+        
+    },
+    
+    "forum": {
+        
+        "activated":{
+            "li":{
+                "next": "text",
+                "tag": "li",
+                "attr": ["class"],
+                "class": "btn item active"
+            }  
+        },
+        
+        "first": "link",
+        "end": "",
+        "link": {
+            "next": "li",
+            "tag": "a",
+            "attr": ["href"],
+            "href": "/forum"
+        },
+        "li": {
+            "next": "text",
+            "tag": "li",
+            "attr": ["class"],
+            "class": "btn item"
+        },
+        "text": {
+            "next": "end",
+            "tag": null,
+            "attr": ["text"],
+            "text": "Forum"
+
+        }
+        
+    }
+    
+}

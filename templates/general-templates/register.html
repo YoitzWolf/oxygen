@@ -1,0 +1,46 @@
+{% extends "general-templates/basic.html" %}
+
+{% block bar %}
+{% endblock %}
+
+{% block content %}
+<div class="w-40 mrg-auto card" style="margin-top: 5%;">
+    <div class="content">
+        <div style="display: flex; flex-wrap: wrap;">
+            <a class="brand brand-extra svg-light" href="/">
+                {% if headers %}
+                    {{headers['brand'] | safe}}
+                {% else %}
+                    oxygen login
+                {% endif %}
+            </a>
+            <nav class="head-text mrg-vertical-auto">registration</nav>
+        </div>
+    </div>
+    <div class="content" style="padding: 2rem; padding-top: 0rem;">
+        <form name="reg" method="post" enctype="multipart/form-data">
+            <input name="login" type="text" class="linear-input w-90 mrg-auto" placeholder="login">
+            
+            <input name="email" type="email" class="linear-input w-90 mrg-auto" placeholder="e-mail">
+            
+            <input name="password" type="password" class="linear-input w-90 mrg-auto" placeholder="pasword">
+            
+            <input name="password-rep" type="password" class="linear-input w-90 mrg-auto" placeholder="repeate pasword">
+            <br>
+            <div class="w-90 mrg-auto" style="display: block;">
+                <div class="wrap">
+                    <button type="submit" class="linear-btn w-45 mrg-auto">
+                        Commit
+                    </button>
+                    
+                    <a class="linear-btn mrg-auto" href="/login">
+                        No, I have accaunt
+                    </a>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+{% endblock %}
