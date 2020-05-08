@@ -1,0 +1,5 @@
+flask
+flask-login
+sqlalchemy
+flask_wtf
+sqlite3
