@@ -1,0 +1,231 @@
+{% extends "general-templates/basic.html" %}
+
+{% block content %}
+<div class="w-80 mrg-auto wrap">
+<div class="w-70 wrap" style="display: inline-block;">
+    <script>
+        function search(table, self){
+            let req = new XMLHttpRequest();
+            req.open('get', '/tags/search/'+self.value, true);
+            req.onload = function(){
+                let tagl = document.getElementById("tag-list");
+                if (this.status == 200){
+                    let res = JSON.parse(this.response);
+                    console.log(`<Oxygen> (GET) from ${table}: ${res} ${typeof(res)}`);
+                    if( res.status == false){
+                        tagl.innerHTML = "<h1>No search results</h1>";
+                    }else{
+                        tagl.innerHTML = "";
+                        for(let i in res.tags){
+                            let tag = res.tags[i];
+                            tagl.innerHTML += `
+                                <span
+                                    id="tag-${tag['header']}"
+                                    class = "tag"
+                                    style = "display: inline-block;
+                                    color: ${tag['color']};
+                                    background-color: ${tag['bg_color']};">
+                                    ${tag.header}
+                                </span>
+                            `;
+                            console.log(res.tags[i]);
+                        }
+                    }
+                }
+                
+            };
+            req.send();
+        }
+    </script>
+    
+    
+    <nav method="GET" class="search mrg-auto" style="display: inline-block; margin-left:0; margin-bottom: 0.5rem; min-width: 300px;">
+            <div class="mrg-auto" style="display: inline-block; min-width: 300px">
+                <h1>Tags on oxygen</h1>
+            </div>
+            <input class="mrg-auto" onchange="search('tags', this)" onkeyup="search('tags', this)" type="text" name="tag-search" autofocus placeholder="search in tags">
+    </nav> 
+    
+    <div class="w-100 wrap" id="tag-list">
+    {% for tag in tags %}
+    <span 
+          id="tag-{{tag['header']}}"
+          class = "tag"
+          style = "display: inline-block;
+                   color: {{tag['color']}};
+                   background-color: {{tag['bg_color']}};">
+        {{tag['header']}}
+    </span>
+    {% endfor %}
+    </div>
+    
+</div>
+
+<script>
+            function fixname(self){
+                self.value = self.value.toLowerCase();
+            }
+    
+            function loadcolor(ids, self){
+                tag = document.getElementById(ids);
+                fixname(tag);
+                if(tag){
+                    if(self.value[0] == '#' && (self.value.length == 4 || self.value.length == 7))
+                    {
+                        tag.style.backgroundColor = self.value;    
+                    }
+                    
+                }
+            }
+            function loadfontcolor(ids, value){
+                tag = document.getElementById(ids);
+                fixname(tag);
+                if(tag){
+                    tag.style.color = value;
+                }
+            }
+    
+            var RES = null;
+            
+            function checkUnique(table, self){
+                let req = new XMLHttpRequest();
+                req.open('get', `/tags/check-unique/`+self.value, true);
+                req.tested = self.value;
+                
+                var RES = null;
+                
+                result_viewer = function(res){
+                    if(res == "ununic"){
+                        document.getElementById("tag-message").style.display = "block";
+                        RES = false;
+                    }else{
+                        document.getElementById("tag-message").style.display = "none";
+                        RES = true;
+                    }
+                }
+                
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (GET) check unique from ${table} Like ${this.tested}: ${res} in type of ${typeof(res)}`);
+                        return result_viewer(res);
+                    };
+                }
+                req.send();
+            }
+            
+            function getCheckerUnique(table, self){
+                let req = new XMLHttpRequest();
+                req.open('get', `/tags/check-unique/`+self.value, true);
+                req.tested = self.value;
+                
+                RES = null;
+                
+                req.result_viewer = function(res){
+                    if(res == "ununic"){
+                        document.getElementById("tag-message").style.display = "block";
+                        RES = false;
+                    }else{
+                        document.getElementById("tag-message").style.display = "none";
+                        RES = true;
+                    }
+                    return RES;
+                }
+                
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (GET) check unique from ${table} Like ${this.tested}: ${res} in type of ${typeof(res)}`);
+                        return this.result_viewer(res);
+                    };
+                }
+                return req; 
+            }
+    
+            function posttag(table, tag){
+                let req = new XMLHttpRequest();
+                
+                req.open('post', `/tags/new`, true);
+                req.setRequestHeader('Content-Type', 'application/json');
+                
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (POST) create new in ${table}: ${tag}, in type of ${typeof(tag)}`);
+                        if(res=="/tags")alert("Success!");
+                        if(res=="/login")
+                            alert("You should sign in to create tag or posts");
+                        document.location.href = res;
+                    };
+                }
+                req.send(JSON.stringify(tag)); 
+            }
+    
+            function tryToSaveTag(table, name, color, text_color){
+                let header = document.getElementById(name);
+                let bg_color = document.getElementById(color);
+                let tx_color = document.querySelector(`input[name="${text_color}"]:checked`).value;
+                RES = null;
+                req = getCheckerUnique(table, header);
+                
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (GET) check unique from ${table} Like ${this.tested}: ${res} in type of ${typeof(res)}`);
+                        if(this.result_viewer(res)){
+                            console.log("Trying to post new tag");
+                            let tag = {
+                                "header": header.value,
+                                "bg_color": bg_color.value,
+                                "color": tx_color
+                            }
+                            return posttag(table, tag);
+                        }else{
+                            return console.log("Invalid");
+                        }
+                    };
+                }
+                req.send();
+            }
+</script>
+    
+<div class="w-20 mrg-auto" style="display: inline-block">
+    <form>
+    <fieldset class="mrg-auto newtag">
+        <legend>New tag</legend>
+        <span id="tag-message" class="message item mrg-auto" style="color: lightcoral; margin-left: 0.3rem">Tag is already created</span>
+        
+        <input maxlength="20" id="ntg" onkeyup="setTimeout(1000); fixname(this); checkUnique('tags', this);" class="linear-input tag w-90 mrg-auto" type="text" placeholder="New tag name">
+        
+        
+        <span class="message item mrg-auto" style="color: lightcoral; margin-left: 0.3rem">Incorrect color</span>
+        <input maxlength="20" id='color' onkeyup="loadcolor('ntg', this)" class="linear-input w-90 mrg-auto" type="text" placeholder="Color #FFFFFF">
+        
+        <div class="w-100 wrap">
+            <div class="mrg-auto">
+                <label class="wrap" for="black">
+                    <input value="black" id="black" type="radio" name="color" checked onchange="loadfontcolor('ntg', 'black')">
+                    Black
+                </label>
+                
+            </div>
+            <div class="mrg-auto">
+
+                <label class="wrap" for="white">
+                    <input value="white" id="white" type="radio" name="color" onchange="loadfontcolor('ntg', 'white')">
+                    White
+                </label>
+            </div>
+        </div>
+        
+        <div class="btn-visible btn item" onclick="tryToSaveTag('tags', 'ntg', 'color', 'color')">
+            Create new tag
+        </div>
+        
+    </fieldset>
+    </form>
+</div>
+</div>
+
+{% endblock %}
+<script>loadfontcolor('ngt', "111");</script>

@@ -44,9 +44,9 @@ class JsonMaster():
         for item in activated:
             if item in data["activable"]:
                 for block in data[item]["activated"]:
-                    print(block, "is activated")
+                    # print(block, "is activated")
                     data[item][block] = data[item]["activated"][block]
-        print(data)
+        # print(data)
         
         
         if data["method"] == "R": # recursive

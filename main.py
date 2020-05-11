@@ -17,6 +17,7 @@ from app.services.courier.jsr                       import JsonMaster
 
 import app.services.users.usr_api                   as UserMaster
 import app.services.forums.frm_api                  as ForumMaster
+import app.services.forums.tgs_api                  as TagMaster
 
 # App Init
 app = flask.Flask(__name__)
@@ -36,7 +37,7 @@ def main():
             "user": UserMaster.get_userBar()
     }
     return flask.render_template(
-        "general-templates/forum.html",
+        "general-templates/basic.html",
         title="oxygen",
         headers=headers
     )
@@ -46,5 +47,7 @@ if __name__ == "__main__":
     app.register_blueprint(UserMaster.blueprint)
     
     app.register_blueprint(ForumMaster.blueprint)
+    
+    app.register_blueprint(TagMaster.blueprint)
     
     app.run(host=getAddres(), port=getPort())

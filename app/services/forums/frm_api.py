@@ -17,14 +17,14 @@ from app.services.courier.jsr                       import JsonMaster
 import app.services.users.usr_api                   as UserMaster
 from app.alchemy                                    import session as Session
 
-""" Service User"""
+""" Service Forum """
 
 folder = "templates"
 
 blueprint: flask.Blueprint = flask.Blueprint('forum_api', __name__, template_folder=folder)    
 # courier: Courier = Courier()
 # Session.global_init(Database_Config.FORUM)
-# session = Session.create_session()
+session = Session.create_session()
 
 def init_blueprint(folder: str=Config.TEMPLATES_FOLDER):
     global blueprint 
@@ -52,8 +52,31 @@ def main():
             "user": UserMaster.get_userBar()
     }
     return flask.render_template(
-        "general-templates/basic.html",
-        title="oxygen",
+        "general-templates/forum.html",
+        title="oxygen forum",
+        headers=headers
+    )
+
+
+@blueprint.route("/forum/new", methods=["GET", "POST"])
+def new():
+    if not UserMaster.is_auntethicated():
+        return flask.redirect("/login")
+        
+    headers = {
+            "main": "New Discussion",
+            "brand": SvgMaster.getFullLogo(),
+            "menu": JsonMaster.htmlifyFile(
+                "./templates/json-templates/menu.json",
+                {
+                    "activated": ["forum"]
+                } 
+            ),
+            "user": UserMaster.get_userBar()
+    }
+    return flask.render_template(
+        "general-templates/forum.html",
+        title=headers['main'],
         headers=headers
     )
 

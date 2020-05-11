@@ -46,8 +46,11 @@ def setApp(app):
 def getBlueprint() -> flask.Blueprint:
     return blueprint
 
-def check_user(user):
-    pass
+def is_auntethicated():
+    return flogin.current_user.is_authenticated
+
+def get_user():
+    return flogin.current_user
 
 # -----------API INTERFACE COURIER-----------
 def get_userBar():
@@ -150,7 +153,6 @@ def login():
             flask.flash(f"Invalid username or password: login: {data['login']}")
             return flask.redirect('/login')
         
-        check_user(user)
         login_user(user, remember=True)
         # if not flogin.is_safe_url(next):    return flask.abort(400)
             

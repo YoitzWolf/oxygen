@@ -5,18 +5,18 @@
 <head>
 	
 		<title>{{title}}</title>
+        <link rel="shortcut icon" href="../static/logo/logo_image.svg" type="image/svg-icon">
 		<meta name="viewport\" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
         <link href="https://fonts.googleapis.com/css?family=Jost:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap&subset=cyrillic,latin-ext" rel="stylesheet"> 
 		<link rel="stylesheet" href="/static/styles/general.css">
-		<link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
 {% endblock %}
 
 <body>
     {% block bar %}
 		<nav class="fixed-top bg-dark header" id="topBar">
-            <div class="container w-70 mrg-auto">
+            <div class=" w-80 mrg-auto">
                 <a class="brand svg-light" href="/">
                     {% if headers %}
                     {{headers['brand'] | safe}}
@@ -34,7 +34,7 @@
                         <a href="/"><li class="btn item">Forum</li></a>
                     {% endif %}
                 </ul>
-                <ul class="linear-menu" style="margin-left: 0">
+                <ul class="linear-menu">
                     {% if headers %}
                         
                         {{headers['user'] | safe}}

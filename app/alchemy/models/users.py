@@ -7,7 +7,6 @@ from flask_login import UserMixin
 
 from app.alchemy.session import SqlAlchemyBase
 
-
 class User(UserMixin, SqlAlchemyBase):
     __tablename__ = 'users'
 
@@ -22,7 +21,6 @@ class User(UserMixin, SqlAlchemyBase):
         unique=True
     )
     
-    public_name = sqlalchemy.Column(sqlalchemy.String, unique=True)
     avatar = sqlalchemy.Column(sqlalchemy.String, default="./static/images/avatars/av/avatar_00.png")
     
     personal_file = sqlalchemy.Column(
@@ -46,7 +44,9 @@ class User(UserMixin, SqlAlchemyBase):
         sqlalchemy.DateTime, default=datetime.datetime.now)
 
     # posts      = orm.relation("Post", back_populates='author')
-    # anwers     = orm.relation("", back_populates='author')
+    anwers     = orm.relation("Answer", back_populates='author')
+    discussions     = orm.relation("Discussion", back_populates='author')
+    tags     = orm.relation("Tag", back_populates='author')
     # news       = orm.relation("News", back_populates='author')
 
     def set_password(self, password):
@@ -57,6 +57,18 @@ class User(UserMixin, SqlAlchemyBase):
 
     def __repr__(self):
         return f"<User> {self.id} {self.login} {self.email}"
+    
+    def to_dict(self):
+        return {
+            "type": "<User>",
+            "repr": self.__repr__(),
+            "id": self.id,
+            "login": self.login,
+            "email": self.email
+        }
+    
+    def init_file(self):
+        self.personal_file = f"/{self.login.lower()[:min(2, len(self.login))]}/user_{self.login}.json"
 
 
 def userFabric(data) -> User:

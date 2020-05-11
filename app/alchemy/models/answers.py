@@ -2,12 +2,11 @@ import datetime
 import sqlalchemy
 import sqlalchemy.orm as orm
 import sqlalchemy.ext.declarative as dec
-
 from app.alchemy.session import SqlAlchemyBase
 from app.alchemy.models.base import Base
 
-class Discussion(SqlAlchemyBase, Base):
-    __tablename__ = 'discussions'
+class Answer(SqlAlchemyBase, Base):
+    __tablename__ = 'answers'
 
     id = sqlalchemy.Column(
         sqlalchemy.Integer,
@@ -15,13 +14,12 @@ class Discussion(SqlAlchemyBase, Base):
         autoincrement=True
     )
 
-    header = sqlalchemy.Column(
+    text = sqlalchemy.Column(
         sqlalchemy.String
-    )
+    )   
     
-    personal_file = sqlalchemy.Column(
-        sqlalchemy.String, 
-        unique=True
+    discussion_id = sqlalchemy.Column(
+       sqlalchemy.Integer, sqlalchemy.ForeignKey("discussions.id")
     )
     
     author_id = sqlalchemy.Column(
@@ -29,6 +27,9 @@ class Discussion(SqlAlchemyBase, Base):
     )
     
     author = orm.relation("User")
+    discussion = orm.relation("Discussion")
+    
+    popularity = sqlalchemy.Column(sqlalchemy.Integer, default=0)
 
     creation_date = sqlalchemy.Column(
         sqlalchemy.DateTime, default=datetime.datetime.now)
@@ -36,16 +37,8 @@ class Discussion(SqlAlchemyBase, Base):
     last_update_date = sqlalchemy.Column(
         sqlalchemy.DateTime, default=datetime.datetime.now)
 
-    # posts      = orm.relation("Post", back_populates='author')
-    answers = orm.relation("Answer", back_populates='discussion')
-    answers_cnt = sqlalchemy.Column(sqlalchemy.Integer, default=0)
-    
-    likes = sqlalchemy.Column(sqlalchemy.Integer, default=0)
-    dislikes = sqlalchemy.Column(sqlalchemy.Integer, default=0)
-    # news       = orm.relation("News", back_populates='author')
-
     def __repr__(self):
-        return f"<Discussion> {self.id} from: {self.creation_date} last: {self.last_update_date} author: {self.author}"
+        return f"<Answer> {self.id} from: {self.header} color: #{self.color} author: {self.author}"
     
     def init_file(self):
         self.personal_file = f"/{self.header.lower()[:min(2, len(self.header))]}/discussion_{self.id}.json"
