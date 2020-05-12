@@ -444,6 +444,15 @@ fieldset legend{
     font-family: Open Sans;
 }
 
+.text-edit a{
+    text-decoration: underline;
+}
+
+.hidden{
+    font-size: 0.7rem;
+    color: var(--ultralight-blue);
+}
+
 .w-100{
     width: 100%;
 }
@@ -514,6 +523,7 @@ label, label input{
 .message{
     display: none;
 }
+
 
 /* appearance for checked radiobutton */
 input[type="radio"]:checked {

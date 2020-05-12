@@ -19,6 +19,7 @@ import app.services.forums.mrk_api                  as MarkMaster
 from app.services.forums.tgs_api                    import getListTags
 from app.alchemy                                    import session as Session
 from app.alchemy.models.discussions                 import Discussion
+from app.alchemy.models.answers                     import Answer
 
 """ Service Forum """
 
@@ -76,7 +77,6 @@ def get_discussions(did:list) -> list:
     for item in did:
         discuss = session.query(Discussion).filter(Discussion.id == item.id).first()
         res.append(flask.render_template("block-templates/discussion.html", discuss=discuss.to_dict_beauty()))
-    print(res)
     return res
 
 
@@ -124,9 +124,32 @@ def disc(id:int):
         title="oxygen forum",
         headers=headers,
         tags=discussion.tagsfilter(getListTags()),
+        answers=map(lambda x: {
+                "date":x.getBeautifulDate(), 'author': x.get_author_field(), 'text': MarkMaster.markdown_to_html(data=x.text)}, discussion.answers),
         discussion=discussion.to_dict_beauty(),
         markdown=MarkMaster.markdown_file_to_html(discussion.get_mrk_file())
     )
+
+@blueprint.route("/forum/d/<id>/add", methods=['post'])
+def add_answer(id:int):
+    if not UserMaster.is_auntethicated():
+        return "NO"
+    
+    data = flask.request.json
+    print(data)
+    session = Session.create_session()
+    discussion = session.query(Discussion).filter(Discussion.id==id).first()
+    
+    ans = Answer()
+    ans.text = data['markdown']
+    ans.discussion_id = discussion.id
+    ans.author_id = UserMaster.get_user().id
+    
+    
+    session.add(ans)
+    session.commit()
+    
+    return "OK"
 
 
 @blueprint.route("/forum/new", methods=["GET", "POST"])

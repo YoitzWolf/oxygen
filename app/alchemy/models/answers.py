@@ -2,10 +2,10 @@ import datetime
 import sqlalchemy
 import sqlalchemy.orm as orm
 import sqlalchemy.ext.declarative as dec
+import flask
 from app.alchemy.session import SqlAlchemyBase
-from app.alchemy.models.base import Base
 
-class Answer(SqlAlchemyBase, Base):
+class Answer(SqlAlchemyBase):
     __tablename__ = 'answers'
 
     id = sqlalchemy.Column(
@@ -42,3 +42,19 @@ class Answer(SqlAlchemyBase, Base):
     
     def init_file(self):
         self.personal_file = f"/{self.header.lower()[:min(2, len(self.header))]}/discussion_{self.id}.json"
+        
+    def get_author_field(self):
+        print(self.author, "DADADA")
+        return flask.render_template(
+            "block-templates/userfield.html",
+            attr=self.author,
+            )
+    
+    def getBeautifulDate(self):
+        data = (str(self.last_update_date)).split()
+        
+        data[0] = data[0].split('-')
+        data[1] = data[1].split(':')[:2]
+        
+        return '.'.join(data[0]) + " at " + ":".join(data[1][:2])
+        

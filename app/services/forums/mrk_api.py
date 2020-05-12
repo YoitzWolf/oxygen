@@ -23,5 +23,5 @@ def markdown_to_html(data=None):
     # markdown to html
     if data is None:
         data = flask.request.json["data"]
-    print(flask.request.json)
+        print(flask.request.json)
     return markdown.markdown(data, extensions=['codehilite'])

@@ -99,9 +99,9 @@ class Discussion(SqlAlchemyBase):
         with open(fullway, 'r') as file:
             data = loads(file.read())
             for tag in tags:
-                if tag['id'] in data['tag_ids']: res.append(tag)
+                if str(tag['id']) in data['tag_ids']: res.append(tag)
             file.close()
-    
+        print(res, "Filterd", data['tag_ids'])
         return res
     
     def set_file(self, data):

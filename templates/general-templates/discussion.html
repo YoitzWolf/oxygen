@@ -7,7 +7,7 @@
         <div id="forum" class="w-100 left-block" >
             <h1 style="display: inline-block">{{discussion['header']}}</h1>
             <span class="item" style="color: var(--light-blue); margin-left:1rem;">author: {{ discussion['author'].login }} last update: {{ discussion['last_update'] }}</span>
-            <div class="w-100 wrap" id="">
+            <div class="w-100 wrap" id="tags">
                 {% for tag in tags %}
                     <span 
                           id="tag-{{tag['header']}}"
@@ -29,8 +29,14 @@
     
         
         <div id="forum" class="w-100 left-block" >
-            {% for i in answers %}
-                {{i}}
+            {% for ans in answers %}
+            <div class="w-100 text-edit" style="display: block; min-height: 100px; background-color: var(--deep-blue); margin-top: 1rem;)">
+                <a>{{ans['author'] | safe}}</a>
+                <p>
+                {{ans['text'] | safe}}
+                </p>
+                <span class="hidden">{{ans['date']}}</span>
+            </div>
             {% endfor %}
         </div>
     
@@ -77,29 +83,23 @@
     
         <script>
             function submit(){
-                return null;
-                if(document.getElementById("discuss-name").value.length < 1){
-                    document.location.href += "#discuss-name";
+
+                if(document.getElementById("sourse").value.length < 1){
+                    return null;
                 }
                 
-                
-                let tag_ids = [];
-                for(i in choosen){
-                    tag_ids.push(choosen[i].getAttribute('tagid'));
-                }
                 let dct = {
-                    "header": document.getElementById("discuss-name").value,
-                    "markdown": document.getElementById("sourse").value,
-                    "tags": tag_ids
+                    "markdown": document.getElementById("sourse").value
                 }
+                
                 let req = new XMLHttpRequest();
-                req.open('post', '/forum/new', true);
+                req.open('post', `/forum/d/{{discussion["id"]}}/add`, true);
                 req.setRequestHeader('Content-Type', 'application/json');
                 req.onload = function(){
                     if (this.status == 200){
                         let res = this.response;
-                        console.log(`<Oxygen> (POST) new Discussion resp: ${this.response}`);
-                        document.location.href = "/forum";
+                        console.log(`<Oxygen> (POST) new Discussion Answer resp: ${this.response}`);
+                        document.location.href = `/forum/d/{{discussion["id"]}}`;
                     }
                 };
                 req.send(JSON.stringify(dct));

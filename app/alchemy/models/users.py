@@ -21,7 +21,7 @@ class User(UserMixin, SqlAlchemyBase):
         unique=True
     )
     
-    avatar = sqlalchemy.Column(sqlalchemy.String, default="http://localhost:8080/static/images/avatars/av/avatar_00.png")
+    avatar = sqlalchemy.Column(sqlalchemy.String, default="static/images/avatars/av/avatar_00.png")
     
     personal_file = sqlalchemy.Column(
         sqlalchemy.String, 

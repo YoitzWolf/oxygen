@@ -64,10 +64,12 @@ class JsonMaster():
         return html
     
     def htmlifyFile(filename, attr={}) -> dict:
+        if "attr" not in attr: attr['attr'] = {}
+        attr['attr']['adress']=flask.request.host
         return JsonMaster.htmlify(
             JsonMaster.getJson(filename),
             (attr["activated"] if "activated" in attr else []),
-            (attr["attr"] if "attr" in attr else {})
+            (attr["attr"] if "attr" in attr else {}),
         )
 
 if __name__ == "__main__":
