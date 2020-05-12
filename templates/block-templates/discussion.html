@@ -1,0 +1,19 @@
+<a href="forum/d/{{discuss['id']}}"><div class="discussion">
+        <div class="head">
+            <h3 class="w-90">{{discuss['header']}}</h3>
+        </div>
+
+        <div style="margin-right: 0;">
+            <div style="display: inline-block;">
+                <div style="display: flex; flex-wrap: wrap;">
+
+                    <span class="item">{{ discuss['answers'] }} comments</span>
+                    <span class="item">author: {{ discuss['author'].login }} last update: {{ discuss['last_update'] }}</span>
+
+                    {%for i in discuss['tags']%}
+                        <span class="tag" style="color:{{i['color']}}; background-color:{{i['bg_color']}}">{{i['header']}}</span>
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+</div></a>

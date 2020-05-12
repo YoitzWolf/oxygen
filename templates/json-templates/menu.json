@@ -1,9 +1,9 @@
 {
     "signature": "top-bar menu recursive json file",
     "method": "R",
-    "queue": ["news", "forum"],
-    "activable": ["news", "forum"],
-    "news": {
+    "queue": ["tags", "forum"],
+    "activable": ["tags", "forum"],
+    "tags": {
         
         "activated":{
             "li":{
@@ -20,7 +20,7 @@
             "next": "li",
             "tag": "a",
             "attr": ["href"],
-            "href": "/news"
+            "href": "/tags"
         },
         "li": {
             "next": "text",
@@ -32,7 +32,7 @@
             "next": "end",
             "tag": null,
             "attr": ["text"],
-            "text": "News"
+            "text": "Tags"
 
         }
         

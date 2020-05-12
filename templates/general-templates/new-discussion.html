@@ -1,0 +1,174 @@
+{% extends "general-templates/basic.html" %}
+
+{% block content %}
+<div class="w-80 mrg-auto wrap">
+    
+    
+        <div id="forum" class="w-100 left-block" >
+            
+            <script>
+                var choosen = [];
+                
+                function unchoose(self){
+                    
+                    self.onclick = function(){choose(this)};
+                    choosen.pop(choosen.indexOf(self));
+                    var tags = document.getElementById('choosen-tag-list')
+                    tags.innerHTML = ""
+                    for(i in choosen){
+                        tags.append(choosen[i]);
+                    }
+                    search('tags', document.getElementById('tag-search'));
+                }
+                
+                function choose(self){
+                    for(i in choosen){
+                        if(choosen[i].innerHTML==self.innerHTML)return null;
+                    }
+                    self.onclick = function(){unchoose(this)};
+                    choosen.push(self);
+                    var tags = document.getElementById('choosen-tag-list')
+                    tags.innerHTML = ""
+                    for(i in choosen){
+                        tags.append(choosen[i]);
+                    }
+                }
+                
+                function search(table, self){
+                    let req = new XMLHttpRequest();
+                    req.open('get', '/tags/search/'+self.value, true);
+                    req.onload = function(){
+                        let tagl = document.getElementById("tag-list");
+                        if (this.status == 200){
+                            let res = JSON.parse(this.response);
+                            console.log(`<Oxygen> (GET) from ${table}: ${res} ${typeof(res)}`);
+                            if( res.status == false){
+                                tagl.innerHTML = "<h1>No search results</h1>";
+                            }else{
+                                tagl.innerHTML = "";
+                                for(let i in res.tags){
+                                    let tag = res.tags[i];
+                                    tagl.innerHTML += `
+                                        <span
+                                            id="tag-${tag['header']}"
+                                            class = "tag" \
+                                            tagid = '${tag['id']}'
+                                            onclick='choose(this)' \
+                                            style = "display: inline-block;
+                                            color: ${tag['color']};
+                                            background-color: ${tag['bg_color']};">
+                                            ${tag.header}
+                                        </span>
+                                    `;
+                                    console.log(res.tags[i]);
+                                }
+                            }
+                        }
+
+                    };
+                    req.send();
+                }
+                
+                function to_markdown(srcn, resn){
+                    var src = document.getElementById(srcn);
+                    var res = document.getElementById(resn);
+                    
+                    let req = new XMLHttpRequest();
+                    req.open('post', '/markdown/convert', true);
+                    req.setRequestHeader('Content-Type', 'application/json');
+                    req.onload = function(){
+                        if (this.status == 200){
+                            res.innerHTML = this.response;
+                            console.log(`<Oxygen> (POST) markdown ${this.response}`);
+                        }
+
+                    };
+                    req.send(JSON.stringify({"data": src.value}));
+                    //console.log(src.value);
+                    
+                }
+            </script>
+    
+    
+            <nav method="GET" class="w-100 search mrg-auto" style="display: inline-block; margin-left:0; margin-bottom: 0.5rem; min-width: 300px;">
+                    <div class="mrg-auto" style="display: inline-block; min-width: 300px">
+                        <h1>New discussion on oxygen</h1>
+                    </div>
+                    <input class="mrg-auto w-100" type="text" id="discuss-name" name="discuss-name" placeholder="Discussion header" style="font-size: 2rem; height: auto">
+                
+                    <textarea id='sourse' class="w-100 text-edit" name="comment" style="display: block;" placeholder="Your text">##Markdown text here</textarea>
+            </nav>
+            
+            <div class="w-100 wrap" id="choosen-tag-list">
+            </div>
+            
+            <nav method="GET" class="search mrg-auto" style="display: inline-block; margin-left:0; margin-bottom: 0.5rem; min-width: 300px;">
+                <div class="mrg-auto" style="display: inline-block; min-width: 300px">
+                <h1>All tags</h1>
+                </div>
+                <input id="tag-search" class="mrg-auto" onchange="search('tags', this)" onkeyup="search('tags', this)" type="text" name="tag-search" autofocus placeholder="search in tags">
+            </nav> 
+
+            <div class="w-100 wrap" id="tag-list">
+                {% for tag in tags %}
+                    <span 
+                          id="tag-{{tag['header']}}"
+                          class = "tag"
+                          onclick= "choose(this)"
+                          tagid = "{{tag['id']}}"
+                          style = "display: inline-block;
+                                   color: {{tag['color']}};
+                                   background-color: {{tag['bg_color']}};">
+                        {{tag['header']}}
+                    </span>
+                {% endfor %}
+            </div>
+    
+
+        
+        </div>
+        
+        <div class="marg-auto btn-visible btn" onclick="to_markdown('sourse', 'result')" style="display: block; margin-top: 2rem">
+            Convert to see end result
+        </div>
+        <div id='result' class="w-100 text-edit" style="display: block; min-height: 100px; background-color: var(--deep-blue); margin-top: 1rem;)">
+            Result will be here
+        </div>
+    
+        <script>
+            function submit(){
+                if(document.getElementById("discuss-name").value.length < 1){
+                    document.location.href += "#discuss-name";
+                }
+                
+                
+                let tag_ids = [];
+                for(i in choosen){
+                    tag_ids.push(choosen[i].getAttribute('tagid'));
+                }
+                let dct = {
+                    "header": document.getElementById("discuss-name").value,
+                    "markdown": document.getElementById("sourse").value,
+                    "tags": tag_ids
+                }
+                let req = new XMLHttpRequest();
+                req.open('post', '/forum/new', true);
+                req.setRequestHeader('Content-Type', 'application/json');
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (POST) new Discussion resp: ${this.response}`);
+                        document.location.href = "/forum";
+                    }
+                };
+                req.send(JSON.stringify(dct));
+            }
+        </script>
+    
+        <div onclick="submit()" class="marg-auto btn-visible btn" style="display: block; margin-top: 2rem">
+            Submit
+        </div>
+    
+</div>
+
+{% endblock %}

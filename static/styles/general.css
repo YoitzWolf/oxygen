@@ -35,6 +35,10 @@ a{
     color: var(--light-blue);
 }
 
+a:hover{
+    color: var(--clear-light);
+}
+
 fieldset{
     color: var(--light-blue);
     border: 0.2rem solid var(--light-blue);
@@ -425,6 +429,19 @@ fieldset legend{
 
 .search input:focus{
     box-shadow: 0 0 0 0.2rem var(--light-blue);
+}
+
+.text-edit{
+    background-color: var(--deep-blue);
+    color: var(--clear-light);
+    border: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    min-width: 300px;
+    max-width: 100%;
+    min-height: 100px;
+    font-family: Open Sans;
 }
 
 .w-100{

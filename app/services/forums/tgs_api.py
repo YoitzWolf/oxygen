@@ -54,7 +54,7 @@ def main():
             "menu": JsonMaster.htmlifyFile(
                 "./templates/json-templates/menu.json",
                 {
-                    "activated": ["forum"]
+                    "activated": ["tags"]
                 } 
             ),
             "user": UserMaster.get_userBar()

@@ -1,0 +1,115 @@
+{% extends "general-templates/basic.html" %}
+
+{% block content %}
+<div class="w-80 mrg-auto wrap">
+    
+    
+        <div id="forum" class="w-100 left-block" >
+            <h1 style="display: inline-block">{{discussion['header']}}</h1>
+            <span class="item" style="color: var(--light-blue); margin-left:1rem;">author: {{ discussion['author'].login }} last update: {{ discussion['last_update'] }}</span>
+            <div class="w-100 wrap" id="">
+                {% for tag in tags %}
+                    <span 
+                          id="tag-{{tag['header']}}"
+                          class = "tag"
+                          onclick= "choose(this)"
+                          tagid = "{{tag['id']}}"
+                          style = "display: inline-block;
+                                   color: {{tag['color']}};
+                                   background-color: {{tag['bg_color']}};">
+                        {{tag['header']}}
+                    </span>
+                {% endfor %}
+            </div>
+            <div class="w-100 text-edit" style="display: block; min-height: 100px; background-color: var(--deep-blue); margin-top: 1rem;)">
+                {{markdown | safe}}
+            </div>
+            <hr>
+        </div>
+    
+        
+        <div id="forum" class="w-100 left-block" >
+            {% for i in answers %}
+                {{i}}
+            {% endfor %}
+        </div>
+    
+    
+        <div id="forum" class="w-100 left-block" >
+            <script>
+                
+                
+                
+                function to_markdown(srcn, resn){
+                    var src = document.getElementById(srcn);
+                    var res = document.getElementById(resn);
+                    
+                    let req = new XMLHttpRequest();
+                    req.open('post', '/markdown/convert', true);
+                    req.setRequestHeader('Content-Type', 'application/json');
+                    req.onload = function(){
+                        if (this.status == 200){
+                            res.innerHTML = this.response;
+                            console.log(`<Oxygen> (POST) markdown ${this.response}`);
+                        }
+
+                    };
+                    req.send(JSON.stringify({"data": src.value}));
+                    //console.log(src.value);
+                    
+                }
+            </script>
+    
+    
+            <nav method="GET" class="w-100 search mrg-auto" style="display: inline-block; margin-left:0; margin-bottom: 0.5rem; min-width: 300px;">
+                <h3>Add your comment!</h3>  
+                    <textarea id='sourse' class="w-100 text-edit" name="comment" style="display: block;" placeholder="Your comment"></textarea>
+            </nav>
+    
+        </div>
+        
+        <div class="marg-auto btn-visible btn" onclick="to_markdown('sourse', 'result')" style="display: block; margin-top: 2rem">
+            Convert markdown to see end result
+        </div>
+        <div id='result' class="w-100 text-edit" style="display: block; min-height: 100px; background-color: var(--deep-blue); margin-top: 1rem;)">
+            Result will be here
+        </div>
+    
+        <script>
+            function submit(){
+                return null;
+                if(document.getElementById("discuss-name").value.length < 1){
+                    document.location.href += "#discuss-name";
+                }
+                
+                
+                let tag_ids = [];
+                for(i in choosen){
+                    tag_ids.push(choosen[i].getAttribute('tagid'));
+                }
+                let dct = {
+                    "header": document.getElementById("discuss-name").value,
+                    "markdown": document.getElementById("sourse").value,
+                    "tags": tag_ids
+                }
+                let req = new XMLHttpRequest();
+                req.open('post', '/forum/new', true);
+                req.setRequestHeader('Content-Type', 'application/json');
+                req.onload = function(){
+                    if (this.status == 200){
+                        let res = this.response;
+                        console.log(`<Oxygen> (POST) new Discussion resp: ${this.response}`);
+                        document.location.href = "/forum";
+                    }
+                };
+                req.send(JSON.stringify(dct));
+            }
+        </script>
+    
+        <div onclick="submit()" class="marg-auto btn-visible btn" style="display: block; margin-top: 2rem">
+            Submit
+        </div>
+    
+</div>
+
+{% endblock %}

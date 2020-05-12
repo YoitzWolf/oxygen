@@ -15,7 +15,10 @@ from app.services.courier.svg                       import SvgMaster
 from app.services.courier.jsr                       import JsonMaster
 
 import app.services.users.usr_api                   as UserMaster
+import app.services.forums.mrk_api                  as MarkMaster
+from app.services.forums.tgs_api                    import getListTags
 from app.alchemy                                    import session as Session
+from app.alchemy.models.discussions                 import Discussion
 
 """ Service Forum """
 
@@ -51,20 +54,59 @@ def main():
             ),
             "user": UserMaster.get_userBar()
     }
+    
+    forum = list(session.query(Discussion).all())[::-1];
+    
+    forum = list(map(lambda x: x.to_dict_beauty(), forum))
+    
     return flask.render_template(
         "general-templates/forum.html",
         title="oxygen forum",
-        headers=headers
+        headers=headers,
+        tags=getListTags(),
+        forum=forum
     )
 
+def get_discuss_html_by_id(did:int):
+    discuss = session.query(Discussion).filter(Discussion.id == did).first()
+    return flask.render_template("block-templates/discussion.html", discuss=discuss)
 
-@blueprint.route("/forum/new", methods=["GET", "POST"])
-def new():
-    if not UserMaster.is_auntethicated():
-        return flask.redirect("/login")
-        
+def get_discussions(did:list) -> list:
+    res = []
+    for item in did:
+        discuss = session.query(Discussion).filter(Discussion.id == item.id).first()
+        res.append(flask.render_template("block-templates/discussion.html", discuss=discuss.to_dict_beauty()))
+    print(res)
+    return res
+
+
+@blueprint.route("/forum/search/<header>", methods=["GET", "POST"])
+def search(header:str):
+  
+    forum = list(session.query(Discussion).filter(Discussion.header.like(f'%{header}%')).all())[::-1];
+    
+    # forum = list(map(lambda x: x.to_dict_beauty(), forum))
+    
+    forum = get_discussions(forum)
+    
+    return {"data":forum}
+
+@blueprint.route("/forum/search", methods=["GET", "POST"])
+def searchall():
+
+    forum = list(session.query(Discussion).all())[::-1];
+    
+    # forum = list(map(lambda x: x.to_dict_beauty(), forum))
+    
+    forum = get_discussions(forum)
+    
+    return {"data":forum}
+
+
+@blueprint.route("/forum/d/<id>")
+def disc(id:int):
     headers = {
-            "main": "New Discussion",
+            "main": "Forum",
             "brand": SvgMaster.getFullLogo(),
             "menu": JsonMaster.htmlifyFile(
                 "./templates/json-templates/menu.json",
@@ -74,10 +116,55 @@ def new():
             ),
             "user": UserMaster.get_userBar()
     }
+    
+    discussion = session.query(Discussion).filter(Discussion.id==id).first()
+    
     return flask.render_template(
-        "general-templates/forum.html",
-        title=headers['main'],
-        headers=headers
+        "general-templates/discussion.html",
+        title="oxygen forum",
+        headers=headers,
+        tags=discussion.tagsfilter(getListTags()),
+        discussion=discussion.to_dict_beauty(),
+        markdown=MarkMaster.markdown_file_to_html(discussion.get_mrk_file())
     )
+
+
+@blueprint.route("/forum/new", methods=["GET", "POST"])
+def new():
+    if not UserMaster.is_auntethicated():
+        return flask.redirect("/login")
+    elif flask.request.method == 'GET':
+        headers = {
+                "main": "New Discussion",
+                "brand": SvgMaster.getFullLogo(),
+                "menu": JsonMaster.htmlifyFile(
+                    "./templates/json-templates/menu.json",
+                    {
+                        "activated": ["forum"]
+                    } 
+                ),
+                "user": UserMaster.get_userBar()
+        }
+        return flask.render_template(
+            "general-templates/new-discussion.html",
+            title=headers['main'],
+            headers=headers
+        )
+    elif flask.request.method == 'POST':
+        data = flask.request.json
+        disc = Discussion()
+        disc.author_id =  UserMaster.get_user().id
+        disc.header = data['header']
+        
+        session = Session.create_session()
+        session.add(disc)
+        disc = session.query(Discussion).filter(Discussion.header==data['header'], Discussion.author_id==UserMaster.get_user().id).all()[-1]
+        disc.init_file()
+        disc.set_file(data)
+        session.query(Discussion).filter(Discussion.id==disc.id).update(disc.to_dict())
+        session.commit()
+    return "end"
+        
+        
 
 

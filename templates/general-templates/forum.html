@@ -5,108 +5,70 @@
     
     
         <div id="forum" class="w-70 left-block" >
-        
-        <a href="forum/d/0001"><div class="discussion">
-            <div class="head">
-                <h3 class="w-90">Some Weaboo text</h3>
-            </div>
             
-            <div style="margin-right: 0;">
-                <div style="display: inline-block;">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        
-                        <span class="item">19 comments</span>
-                        <span class="item">Yoitz 2 hours ago</span>
-                        
-                        <span class="tag" style="display: inline-block; color: var(--deep-blue); background-color: orange;">first</span>
-                        <span class="tag" style="display: inline-block;color: var(--clear-light); background-color: red;">second</span>
+            <script>
+                function search(table, self){
+                    let req = new XMLHttpRequest();
+                    if(self.value.length > 0){
+                        req.open('get', '/forum/search/'+self.value, true);
+                    }else{
+                        req.open('get', '/forum/search', true);
+                    }
+                    req.onload = function(){
+                        let tagl = document.getElementById("disc-list");
+                        if (this.status == 200){
+                            let res = JSON.parse(this.response);
+                            console.log(`<Oxygen> (GET) from ${table}: ${res} ${typeof(res)}`);
+                            if( res.status == false){
+                                tagl.innerHTML = "<h1>No search results</h1>";
+                            }else{
+                                tagl.innerHTML = "";
+                                for(let i in res){
+                                    tagl.innerHTML +=  res[i];
+                                    console.log(res[i]);
+                                }
+                            }
+                        }
+
+                    };
+                    req.send();
+                }
+            </script>
+    
+    
+            <nav method="GET" class="search mrg-auto" style="display: inline-block; margin-left:0; margin-bottom: 0.5rem; min-width: 300px;">
+                    <div class="mrg-auto" style="display: inline-block; min-width: 300px">
+                        <h1>Discussions on oxygen</h1>
                     </div>
+                    <input class="mrg-auto" onchange="search('discussions', this)" onkeyup="search('discussions', this)" type="text" name="tag-search"  placeholder="search discussion by header">
+            </nav> 
+    
+
+            <nav id="disc-list">
+            {%for discuss in forum %}
+            <a href="forum/d/{{discuss['id']}}"><div class="discussion">
+                <div class="head">
+                    <h3 class="w-90">{{discuss['header']}}</h3>
                 </div>
 
-                
-            </div>
-        </div></a>
-            
-        <a href="forum/d/0001"><div class="discussion">
-            <div class="head">
-                <h3 class="w-90">Some Weaboo text</h3>
-            </div>
-            
-            <div style="margin-right: 0;">
-                <div style="display: inline-block;">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        
-                        <span class="item">19 comments</span>
-                        <span class="item">Yoitz 2 hours ago</span>
-                        
-                        <span class="tag" style="display: inline-block; color: var(--deep-blue); background-color: orange;">first</span>
-                        <span class="tag" style="display: inline-block;color: var(--clear-light); background-color: red;">second</span>
-                    </div>
-                </div>
+                <div style="margin-right: 0;">
+                    <div style="display: inline-block;">
+                        <div style="display: flex; flex-wrap: wrap;">
 
-                
-            </div>
-        </div></a>
-            <a href="forum/d/0001"><div class="discussion">
-            <div class="head">
-                <h3 class="w-90">Some Weaboo text</h3>
-            </div>
-            
-            <div style="margin-right: 0;">
-                <div style="display: inline-block;">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        
-                        <span class="item">19 comments</span>
-                        <span class="item">Yoitz 2 hours ago</span>
-                        
-                        <span class="tag" style="display: inline-block; color: var(--deep-blue); background-color: orange;">first</span>
-                        <span class="tag" style="display: inline-block;color: var(--clear-light); background-color: red;">second</span>
-                    </div>
-                </div>
+                            <span class="item">{{ discuss['answers'] }} comments</span>
+                            <span class="item">author: {{ discuss['author'].login }} last update: {{ discuss['last_update'] }}</span>
 
-                
-            </div>
-        </div></a>
-            <a href="forum/d/0001"><div class="discussion">
-            <div class="head">
-                <h3 class="w-90">Some Weaboo text</h3>
-            </div>
-            
-            <div style="margin-right: 0;">
-                <div style="display: inline-block;">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        
-                        <span class="item">19 comments</span>
-                        <span class="item">Yoitz 2 hours ago</span>
-                        
-                        <span class="tag" style="display: inline-block; color: var(--deep-blue); background-color: orange;">first</span>
-                        <span class="tag" style="display: inline-block;color: var(--clear-light); background-color: red;">second</span>
+                            {%for i in discuss['tags']%}
+                                <span class="tag" style="color:{{i['color']}}; background-color:{{i['bg_color']}}">{{i['header']}}</span>
+                            {%endfor%}
+                        </div>
                     </div>
-                </div>
 
-                
-            </div>
-        </div></a>
-            <a href="forum/d/0001"><div class="discussion">
-            <div class="head">
-                <h3 class="w-90">Some Weaboo text</h3>
-            </div>
-            
-            <div style="margin-right: 0;">
-                <div style="display: inline-block;">
-                    <div style="display: flex; flex-wrap: wrap;">
-                        
-                        <span class="item">19 comments</span>
-                        <span class="item">Yoitz 2 hours ago</span>
-                        
-                        <span class="tag" style="display: inline-block; color: var(--deep-blue); background-color: orange;">first</span>
-                        <span class="tag" style="display: inline-block;color: var(--clear-light); background-color: red;">second</span>
-                    </div>
-                </div>
 
-                
-            </div>
-        </div></a>
+                </div>
+            </div></a>
+            {% endfor %}
+            </nav>
         
         </div>
     
@@ -119,16 +81,12 @@
         <div class="line"></div>
         
         <div class="card-flex card w-90">
-            <a href="/tags" class="btn" style="display: block; width: 100%; margin-bottom: 1rem">Tags</a>
+            <a href="/tags" class="btn" style="underline; display: block; width: 100%; margin-bottom: 1rem" title="Add new tags">Tags +</a>
             
             <div style="display: flex; flex-wrap: wrap;">
-                
-                <span class="tag btn" style="color: var(--deep-blue); background-color: orange;">first</span>
-                <span class="tag btn" style="color: var(--clear-light); background-color: red;">second</span>
-                <span class="tag btn" style="color: var(--clear-light); background-color: purple;">and looooooong</span>
-                <span class="tag btn" style="color: var(--deep-blue); background-color: yellow;">Too many words really</span>
-
-                
+                {%for i in tags%}
+                    <span class="tag" style="color:{{i['color']}}; background-color:{{i['bg_color']}}">{{i['header']}}</span>
+                {%endfor%}
             </div>
         </div>
     </div>
