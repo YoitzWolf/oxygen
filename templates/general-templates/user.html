@@ -1,0 +1,48 @@
+{% extends "general-templates/basic.html" %}
+
+{% block content %}
+<div class="w-80 mrg-auto wrap">
+        <form action="/me/change" method="POST" enctype="multipart/form-data">
+        <h2 class="mrg-auto">User cabinete</h2>
+        
+        <div class="w-100 left-block" >
+            <nav class="linear-menu nohover">
+                    <li class="nohover btn item">
+                        <div class="wrap img-huge">
+                            <label>
+                                <img id="avatar" vspace=10 align="middle" class="img-1 item nohover" src="./{{user['avatar']}}">
+                                <input name="avatar" id="avatar-file" type="file" hidden>
+                            </label>
+                            <div class="item nohover"><p>{{user["login"]}}<br>{{user["email"]}}</p></div>
+                            <script>
+                                var source = false;
+                                document.getElementById('avatar-file').onchange = function onFileSelected(event) {
+                                      var selectedFile = event.target.files[0];
+                                      source = selectedFile;
+                                      var reader = new FileReader();
+
+                                      var imgtag = document.getElementById("avatar");
+                                      imgtag.title = selectedFile.name;
+
+                                      reader.onload = function(event) {
+                                        imgtag.src = event.target.result;
+                                      };
+
+                                      reader.readAsDataURL(selectedFile);
+                                }
+                            </script>
+                        </div>
+                    </li> 
+            </nav>
+            
+        </div>        
+    
+         <button type="submit" class="marg-auto btn-visible btn" style="display: block; border:none; margin-top: 2rem; font: inherit">
+           Save new avatar
+        </button>
+    
+    </form>
+    
+</div>
+
+{% endblock %}

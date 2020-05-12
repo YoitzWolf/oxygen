@@ -406,6 +406,30 @@ fieldset legend{
     cursor: pointer;
 }
 
+.img-huge .img-1{
+    width: 10rem;
+    height: 10rem;
+    box-shadow: 0 0 1rem 1rem var(--deep-blue);
+    border-radius: 100%;
+    border-spacing: 0;
+    border: 10px solid var(--light-blue);
+    
+}
+
+.img-huge {
+    font-size: 2rem;
+}
+
+img:hover{
+    border-color: var(--deep-blue) !important;
+}
+
+.img-huge div{
+    height: 100%;
+    margin-top: auto;
+    margin-left: 1rem;
+}
+
 .tag:hover{
     box-shadow: 0 0 1rem 0.5rem var(--deep-blue);
     z-index: 1000;

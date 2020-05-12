@@ -16,6 +16,7 @@ from app.services.courier.svg                       import SvgMaster
 from app.services.courier.jsr                       import JsonMaster
 
 import app.services.users.usr_api                   as UserMaster
+import app.services.users.cab_api                   as СabineteMaster
 import app.services.forums.frm_api                  as ForumMaster
 import app.services.forums.tgs_api                  as TagMaster
 import app.services.forums.mrk_api                  as MarkdownMaster
@@ -52,5 +53,7 @@ if __name__ == "__main__":
     app.register_blueprint(TagMaster.blueprint)
     
     app.register_blueprint(MarkdownMaster.blueprint)
+    
+    app.register_blueprint(СabineteMaster.blueprint)
     
     app.run(host=getAddres(), port=getPort())
