@@ -7,7 +7,6 @@ Flask-Markdown==0.3
 Flask-RESTful==0.3.8
 Flask-WTF==0.14.3
 Jinja2==2.11.3
-joblib==0.14.1
 json5==0.9.3
 jsonschema==3.2.0
 Markdown==3.2.2
